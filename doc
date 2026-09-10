@@ -1,4 +1,0 @@
-* Program counter length is decided by the memory size. but we are using 32 bits, even if the memory size is not 2^32. this is because it is in the rv32i specification. technicaly we can address 4GB addressable space.
-* Our instruction memory is 4KB, so we only need 10 bits to address the whole memory. mem[0] gives the first word, mem[1] gives the second word and so on. but our program counter increments by 4, so we ignore the last 2 bits of the program counter. then we take the lower 10 bits to address our instruction memory.
-* R format instruction. instructions with three registers, two input and one output, like add r1, r2, r3; 
-* There are three types of instructions R type, I type and J type.
