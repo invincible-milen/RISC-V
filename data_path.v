@@ -11,7 +11,6 @@ module data_path (
 	output wire zero
 );
 	
-	assign op_code = inst[6:0];
 
 	wire [31:0] pc_in, pc_out;
 	program_counter pc(.pc_in(pc_in), .clk(clk), .reset(pc_reset), .pc_out(pc_out));
@@ -49,6 +48,8 @@ module data_path (
 	add pc_add(.in1(pc_out), .in2(pc_offset), .out(pc_o));
 
 	mux_2to1 pc_mux(.sel(pc_src), .in0(pc_4), .in1(pc_o), .out(pc_in));
+
+	assign op_code = inst[6:0];
 
 endmodule
 
