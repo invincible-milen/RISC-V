@@ -2,12 +2,16 @@ module data_path (
 	input wire clk,
 	input wire reg_write,
 	input wire alu_src,
-	input wire [3:0] alu_op,
+	input wire [1:0] alu_op,
 	input wire mem_write,
 	input wire mem_to_reg,
 	input wire pc_src,
-	input wire pc_reset
+	input wire pc_reset,
+	output wire [6:0] op_code,
+	output wire zero
 );
+	
+	assign op_code = inst[6:0];
 
 	wire [31:0] pc_in, pc_out;
 	program_counter pc(.pc_in(pc_in), .clk(clk), .reset(pc_reset), .pc_out(pc_out));
@@ -27,9 +31,11 @@ module data_path (
 	wire [31:0] alu_in2;
 	mux_2to1 alu_mux(.sel(alu_src), .in0(read_data2), .in1(imm), .out(alu_in2));
 
+	wire [3:0] alu_control;
+	alu_control ac(.func7(inst[31:25]), .func3(inst[14:12]), .alu_op(alu_op), .control(alu_control));
+
 	wire [31:0] alu_out;
-	wire zero;
-	alu a(.a(read_data1), .b(alu_in2), .alu_op(alu_op), .result(alu_out), .zero(zero));
+	alu a(.a(read_data1), .b(alu_in2), .alu_op(alu_control), .result(alu_out), .zero(zero));
 
 	wire [31:0] mem_data;
 	data_memory dmem(.clk(clk), .mem_write(mem_write), .address(alu_out), .write_data(read_data2), .read_data(mem_data));
